@@ -1,11 +1,7 @@
 from selenium.common.exceptions import NoSuchElementException, ElementClickInterceptedException
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 import time
 import pandas as pd
-
 
 
 def get_jobs(keyword,num_jobs, verbose, path, slp_time):
@@ -28,12 +24,8 @@ def get_jobs(keyword,num_jobs, verbose, path, slp_time):
         # Or, wait until the webpage is loaded, instead of hardcoding it.
         time.sleep(slp_time)
         # Test for the "Sign Up" prompt and get rid of it.
-        wait = WebDriverWait(driver, 10)
-#        element = wait.until(EC.element_to_be_clickable((By.find_element_by_class_name, "selected")))
         try:
-#            driver.find_element_by_class_name("selected").click()
-            element = wait.until(EC.element_to_be_clickable((By.CLASS_NAME,"selected"))).click()
-
+            driver.find_element_by_class_name("selected").click()
         except ElementClickInterceptedException:
             pass
         time.sleep(.1)
@@ -48,18 +40,15 @@ def get_jobs(keyword,num_jobs, verbose, path, slp_time):
             # Going through each job in this page
         job_buttons = driver.find_elements_by_class_name(
             "jl")  # jl for Job Listing. These are the buttons we're going to click.
-#        job_elements = wait.until(EC.element_to_be_clickable((By.CLASS_NAME,"jl")))
         for job_button in job_buttons:
             print("Progress: {}".format("" + str(len(jobs)) + "/" + str(num_jobs)))
-            print('job_button',job_button)
             if len(jobs) >= num_jobs:
                 break
+            time.sleep(20)
             job_button.click()  # You might
-#            job_ele.click()
-#            element = wait.until(EC.element_to_be_clickable((job_button))).click()
-            time.sleep(slp_time)
+#            time.sleep(20)
             collected_successfully = False
-#
+
             while not collected_successfully:
                 try:
                     company_name = driver.find_element_by_xpath('.//div[@class="employerName"]').text
@@ -68,7 +57,7 @@ def get_jobs(keyword,num_jobs, verbose, path, slp_time):
                     job_description = driver.find_element_by_xpath('.//div[@class="jobDescriptionContent desc"]').text
                     collected_successfully = True
                 except:
-                    time.sleep(slp_time)
+                    time.sleep(5)
             try:
                 salary_estimate = driver.find_element_by_xpath('.//span[@class="css-1uyte9r css-hca4ks e1wijj242"]').text
             except NoSuchElementException:
@@ -90,8 +79,8 @@ def get_jobs(keyword,num_jobs, verbose, path, slp_time):
             # clicking on this:
             # <div class="tab" data-tab-type="overview"><span>Company</span></div>
             try:
-#                driver.find_element_by_xpath('.//div[@class="tab" and @data-tab-type="overview"]').click()
-                element = wait.until(EC.element_to_be_clickable((By.XPATH, './/div[@class="tab" and @data-tab-type="overview"]'))).click()
+                time.sleep(20)
+                driver.find_element_by_xpath('.//div[@class="tab" and @data-tab-type="overview"]').click()
                 try:
                     # <div class="infoEntity">
                     #    <label>Headquarters</label>
